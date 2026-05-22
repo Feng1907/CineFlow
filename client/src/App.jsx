@@ -10,6 +10,7 @@ import Country from './pages/Country';
 import NowPlaying from './pages/NowPlaying';
 import TVShows from './pages/TVShows';
 import Movies from './pages/Movies';
+import Upcoming from './pages/Upcoming';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/now-playing"   element={<NowPlaying />} />
             <Route path="/tv"            element={<TVShows />} />
             <Route path="/movies"        element={<Movies />} />
+            <Route path="/upcoming"      element={<Upcoming />} />
             <Route path="*"              element={<NotFound />} />
           </Routes>
         </main>

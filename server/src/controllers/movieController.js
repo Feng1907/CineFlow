@@ -27,6 +27,8 @@ exports.search = wrap((req) => {
 
 exports.getDetail = wrap((req) => tmdb.getMovieDetail(req.params.id));
 
+exports.getUpcoming = wrap((req) => tmdb.getUpcoming(req.query.page));
+
 exports.getGenres = wrap(() => tmdb.getGenres());
 
 exports.discover = wrap((req) => {

@@ -111,6 +111,9 @@ export default function Navbar() {
             <Link to="/now-playing" className="text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
               Chiếu rạp
             </Link>
+            <Link to="/upcoming" className="text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+              Sắp chiếu
+            </Link>
             <Link to="/movies" className="text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
               Phim lẻ
             </Link>
@@ -156,6 +159,7 @@ export default function Navbar() {
         <div className="lg:hidden bg-surface/98 backdrop-blur-md border-t border-white/5 px-4 pb-5 pt-2 max-h-[80vh] overflow-y-auto">
           <Link to="/" className="block py-2.5 text-sm font-medium text-zinc-300 hover:text-white">Trang chủ</Link>
           <Link to="/now-playing" className="block py-2.5 text-sm font-medium text-zinc-300 hover:text-white">Phim chiếu rạp</Link>
+          <Link to="/upcoming" className="block py-2.5 text-sm font-medium text-zinc-300 hover:text-white">Phim sắp chiếu</Link>
           <Link to="/movies" className="block py-2.5 text-sm font-medium text-zinc-300 hover:text-white">Phim lẻ</Link>
           <Link to="/tv" className="block py-2.5 text-sm font-medium text-zinc-300 hover:text-white">Phim bộ</Link>
           <Link to="/favorites" className="flex items-center gap-2 py-2.5 text-sm font-medium text-zinc-300 hover:text-white">

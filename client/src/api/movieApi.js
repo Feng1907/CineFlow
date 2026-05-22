@@ -20,6 +20,7 @@ export const getTopRated = (page = 1) => api.get('/movies/top_rated', { params: 
 export const getNowPlaying = (page = 1) => api.get('/movies/now-playing', { params: { page } });
 export const searchMovies = (query, page = 1) => api.get('/movies/search', { params: { query, page } });
 export const getMovieDetail = (id) => api.get(`/movies/${id}`);
+export const getUpcoming = (page = 1) => api.get('/movies/upcoming', { params: { page } });
 export const getGenres = () => api.get('/genres/movie');
 export const discoverMovies = ({ genre_id, country, sort_by, page } = {}) =>
   api.get('/movies/discover', { params: { genre_id, country, sort_by, page } });

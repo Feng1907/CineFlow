@@ -31,6 +31,8 @@ module.exports = {
       append_to_response: 'credits,videos,similar,watch/providers',
     }),
 
+  getUpcoming: (page = 1) => get('/movie/upcoming', { page }),
+
   getGenres: () => get('/genre/movie/list'),
 
   // Discover movies — filter by genre, country, sort

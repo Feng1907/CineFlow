@@ -9,6 +9,7 @@ router.get('/movies/trending',    movie.getTrending);
 router.get('/movies/top-rated',   movie.getTopRated);
 router.get('/movies/now-playing', movie.getNowPlaying);
 router.get('/movies/search',      movie.search);
+router.get('/movies/upcoming',    movie.getUpcoming);
 router.get('/movies/discover',    movie.discover);   // must be before /:id
 router.get('/movies/:id',         movie.getDetail);
 
