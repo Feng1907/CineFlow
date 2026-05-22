@@ -87,7 +87,7 @@ export default function CarouselRow({ title, movies = [], loading, to, mediaType
     );
   }
 
-  if (!movies.length) return null;
+  if (!movies?.length) return null;
 
   return (
     <div className="mb-10 group/row">

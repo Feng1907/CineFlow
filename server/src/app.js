@@ -24,7 +24,7 @@ app.use(cors({
 
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: 'Quá nhiều yêu cầu, vui lòng thử lại sau.' },
