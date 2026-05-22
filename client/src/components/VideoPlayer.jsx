@@ -32,7 +32,8 @@ const SERVERS = [
 
 export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, title, onClose }) {
   const [serverId, setServerId] = useState('vidsrc');
-  const [key, setKey] = useState(0); // force iframe reload
+  const [key, setKey] = useState(0);
+  const [blockAds, setBlockAds] = useState(true); // bật chặn popup mặc định
 
   const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
 
@@ -87,7 +88,18 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
             </button>
           ))}
 
-          {/* Reload button */}
+          {/* Block ads toggle */}
+          <button
+            onClick={() => { setBlockAds((v) => !v); setKey((k) => k + 1); }}
+            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
+              blockAds ? 'bg-green-700 text-white' : 'bg-white/10 text-zinc-400'
+            }`}
+            title={blockAds ? 'Đang chặn popup — click để tắt nếu player bị lỗi' : 'Popup chưa bị chặn — click để bật'}
+          >
+            {blockAds ? '🛡 Chặn ads' : '⚠ Ads'}
+          </button>
+
+          {/* Reload */}
           <button
             onClick={reload}
             className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors ml-1"
@@ -114,9 +126,10 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
           src={src}
           allowFullScreen
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-          // sandbox chặn popup/tab mới từ quảng cáo bên trong iframe
-          // KHÔNG có allow-popups và allow-top-navigation
-          sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-fullscreen"
+          sandbox={blockAds
+            ? "allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-fullscreen"
+            : undefined
+          }
           className="w-full h-full border-0"
           title={title}
         />
