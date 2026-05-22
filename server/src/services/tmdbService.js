@@ -63,4 +63,24 @@ module.exports = {
       include_adult: false,
     }),
   getTVGenres: () => get('/genre/tv/list'),
+
+  // TV Season + Episodes
+  getTVSeason: (tvId, seasonNumber) =>
+    get(`/tv/${tvId}/season/${seasonNumber}`),
+
+  // Person
+  getPerson: (id) =>
+    get(`/person/${id}`, { append_to_response: 'movie_credits,tv_credits,images' }),
+
+  // Movie detail with reviews + content_ratings
+  getMovieDetailFull: (id) =>
+    get(`/movie/${id}`, {
+      append_to_response: 'credits,videos,similar,watch/providers,reviews,release_dates',
+    }),
+
+  // TV detail with content_ratings
+  getTVDetailFull: (id) =>
+    get(`/tv/${id}`, {
+      append_to_response: 'credits,videos,similar,watch/providers,reviews,content_ratings',
+    }),
 };

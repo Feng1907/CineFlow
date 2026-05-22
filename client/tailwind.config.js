@@ -20,6 +20,15 @@ export default {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
+      animation: {
+        hovercard: 'hovercard 0.2s ease-out both',
+      },
+      keyframes: {
+        hovercard: {
+          '0%':   { opacity: '0', transform: 'scale(0.92) translateY(4px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+      },
     },
   },
   plugins: [],

@@ -34,3 +34,7 @@ export const getTVDetail   = (id) => api.get(`/tv/${id}`);
 export const getTVGenres   = () => api.get('/genres/tv');
 export const discoverTV    = ({ genre_id, country, sort_by, page } = {}) =>
   api.get('/tv/discover', { params: { genre_id, country, sort_by, page } });
+export const getTVSeason   = (id, seasonNumber) => api.get(`/tv/${id}/season/${seasonNumber}`);
+
+// People
+export const getPerson = (id) => api.get(`/people/${id}`);

@@ -19,3 +19,9 @@ exports.discover = wrap((req) => {
   const { genre_id, country, sort_by, page } = req.query;
   return tmdb.discoverTV({ genre_id, country, sort_by, page });
 });
+
+exports.getDetail = wrap((req) => tmdb.getTVDetailFull(req.params.id));
+
+exports.getSeason = wrap((req) =>
+  tmdb.getTVSeason(req.params.id, req.params.seasonNumber)
+);
