@@ -27,11 +27,10 @@ const userSchema = new mongoose.Schema({
   watchHistory: { type: [historySchema], default: [] },
 }, { timestamps: true });
 
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('passwordHash')) return next();
+// Hash password before saving (async — no next() in Mongoose 6+)
+userSchema.pre('save', async function () {
+  if (!this.isModified('passwordHash')) return;
   this.passwordHash = await bcrypt.hash(this.passwordHash, 12);
-  next();
 });
 
 userSchema.methods.comparePassword = function (plain) {
