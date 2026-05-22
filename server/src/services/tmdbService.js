@@ -32,4 +32,13 @@ module.exports = {
     }),
 
   getGenres: () => get('/genre/movie/list'),
+
+  // Discover movies filtered by genre, sort, etc.
+  discoverMovies: ({ genre_id, sort_by = 'popularity.desc', page = 1 } = {}) =>
+    get('/discover/movie', {
+      with_genres: genre_id,
+      sort_by,
+      page,
+      include_adult: false,
+    }),
 };

@@ -21,3 +21,5 @@ export const getNowPlaying = (page = 1) => api.get('/movies/now-playing', { para
 export const searchMovies = (query, page = 1) => api.get('/movies/search', { params: { query, page } });
 export const getMovieDetail = (id) => api.get(`/movies/${id}`);
 export const getGenres = () => api.get('/genres/movie');
+export const discoverMovies = ({ genre_id, sort_by, page } = {}) =>
+  api.get('/movies/discover', { params: { genre_id, sort_by, page } });
