@@ -22,15 +22,9 @@ export default function Search() {
   const debounceRef = useRef(null);
 
   const doSearch = async (q, pg = 1, append = false) => {
-    if (!q.trim()) {
-      setMovies([]);
-      setTotalPages(0);
-      return;
-    }
-
+    if (!q.trim()) { setMovies([]); setTotalPages(0); return; }
     append ? setLoadingMore(true) : setLoading(true);
     setError(null);
-
     try {
       const res = await searchMovies(q, pg);
       setMovies((prev) => append ? [...prev, ...(res.results || [])] : (res.results || []));
@@ -44,7 +38,6 @@ export default function Search() {
     }
   };
 
-  // Debounce on query change
   useEffect(() => {
     clearTimeout(debounceRef.current);
     if (query.trim()) {
@@ -58,27 +51,18 @@ export default function Search() {
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
-  // Run initial search from URL param
-  useEffect(() => {
-    if (initialQuery) doSearch(initialQuery, 1);
-  }, []);
-
-  const loadMore = () => doSearch(query, page + 1, true);
+  useEffect(() => { if (initialQuery) doSearch(initialQuery, 1); }, []);
 
   return (
     <div className="fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
-      <h1 className="text-2xl font-bold mb-6 text-center">Search Movies</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Tìm Kiếm Phim</h1>
 
-      <SearchBar
-        value={query}
-        onChange={setQuery}
-        onClear={() => setQuery('')}
-      />
+      <SearchBar value={query} onChange={setQuery} onClear={() => setQuery('')} />
 
       <div className="mt-8">
         {query.trim() && !loading && !error && movies.length > 0 && (
           <p className="text-sm text-zinc-400 mb-4">
-            Showing results for <span className="text-white font-medium">"{query}"</span>
+            Kết quả cho <span className="text-white font-medium">"{query}"</span>
           </p>
         )}
 
@@ -90,34 +74,29 @@ export default function Search() {
           skeletonCount={12}
         />
 
-        {/* Empty state when no results */}
         {!loading && !error && query.trim() && movies.length === 0 && (
           <div className="text-center py-16 text-zinc-500">
-            <p className="text-lg">No results for "{query}"</p>
-            <p className="text-sm mt-1">Try a different keyword.</p>
+            <p className="text-lg">Không có kết quả cho "{query}"</p>
+            <p className="text-sm mt-1">Hãy thử từ khóa khác.</p>
           </div>
         )}
 
-        {/* Idle state */}
         {!query.trim() && (
           <div className="text-center py-20 text-zinc-500">
-            <p className="text-lg">Start typing to search for movies...</p>
+            <p className="text-lg">Nhập tên phim để tìm kiếm...</p>
           </div>
         )}
 
-        {/* Load more */}
         {movies.length > 0 && page < totalPages && !loading && (
           <div className="flex justify-center mt-10">
             <button
-              onClick={loadMore}
+              onClick={() => doSearch(query, page + 1, true)}
               disabled={loadingMore}
               className="btn-secondary min-w-[140px] justify-center"
             >
-              {loadingMore ? (
-                <><Loader2 size={16} className="animate-spin" /> Loading...</>
-              ) : (
-                'Load More'
-              )}
+              {loadingMore
+                ? <><Loader2 size={16} className="animate-spin" /> Đang tải...</>
+                : 'Xem thêm'}
             </button>
           </div>
         )}

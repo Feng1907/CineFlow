@@ -34,7 +34,7 @@ export default function MovieCard({ movie }) {
       {/* Favorite button */}
       <button
         onClick={handleFav}
-        aria-label={fav ? 'Remove from favorites' : 'Add to favorites'}
+        aria-label={fav ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
         className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${
           fav
             ? 'bg-brand text-white'

@@ -22,7 +22,7 @@ export default function Footer() {
 
         <div className="mt-6 pt-6 border-t border-white/5 text-center text-xs text-zinc-500 space-y-1">
           <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-          <p>© {new Date().getFullYear()} CineFlow. For educational purposes only. No movies are hosted or streamed.</p>
+          <p>© {new Date().getFullYear()} CineFlow. Chỉ dành cho mục đích học tập. Không lưu trữ hoặc phát trực tuyến phim.</p>
         </div>
       </div>
     </footer>

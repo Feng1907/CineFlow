@@ -7,11 +7,11 @@ export default function NotFound() {
       <Film className="text-zinc-700" size={80} />
       <div>
         <h1 className="text-8xl font-extrabold text-zinc-800">404</h1>
-        <p className="text-xl font-semibold text-white mt-2">Page Not Found</p>
-        <p className="text-zinc-400 mt-2">Looks like this scene was cut from the film.</p>
+        <p className="text-xl font-semibold text-white mt-2">Trang không tồn tại</p>
+        <p className="text-zinc-400 mt-2">Có vẻ như trang này đã bị xóa khỏi kịch bản.</p>
       </div>
       <Link to="/" className="btn-primary">
-        Back to Home
+        Về trang chủ
       </Link>
     </div>
   );

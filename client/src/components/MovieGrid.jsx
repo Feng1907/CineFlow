@@ -6,7 +6,7 @@ export default function MovieGrid({ movies, loading, error, skeletonCount = 8, o
   if (loading) return <LoadingSkeleton count={skeletonCount} />;
   if (error) return <ErrorState message={error} onRetry={onRetry} />;
   if (!movies?.length) return (
-    <div className="text-center py-16 text-zinc-500">No movies found.</div>
+    <div className="text-center py-16 text-zinc-500">Không tìm thấy phim nào.</div>
   );
 
   return (

@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import {
-  Play, Heart, Star, Clock, Calendar, ChevronLeft, Globe
-} from 'lucide-react';
+import { Play, Heart, Star, Clock, Calendar, ChevronLeft, Globe } from 'lucide-react';
 import { getMovieDetail } from '../api/movieApi';
 import { getBackdropUrl, getPosterUrl, getAvatarUrl, formatYear, formatRuntime, formatRating } from '../utils/imageUrl';
 import { useFavorites } from '../hooks/useFavorites';
@@ -13,80 +11,54 @@ import ErrorState from '../components/ErrorState';
 
 export default function MovieDetail() {
   const { id } = useParams();
-  const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [trailerKey, setTrailerKey] = useState(null);
+  const [movie, setMovie]       = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+  const [trailerKey, setTrailer] = useState(null);
 
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const fetchMovie = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getMovieDetail(id);
-      setMovie(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true); setError(null);
+    try   { setMovie(await getMovieDetail(id)); }
+    catch (err) { setError(err.message); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchMovie();
-    window.scrollTo(0, 0);
-  }, [id]);
+  useEffect(() => { fetchMovie(); window.scrollTo(0, 0); }, [id]);
 
   if (loading) return <DetailSkeleton />;
-  if (error) return (
-    <div className="pt-24">
-      <ErrorState message={error} onRetry={fetchMovie} />
-    </div>
-  );
-  if (!movie) return null;
+  if (error)   return <div className="pt-24"><ErrorState message={error} onRetry={fetchMovie} /></div>;
+  if (!movie)  return null;
 
-  // Find YouTube trailer
-  const trailer = movie.videos?.results?.find(
+  const trailer   = movie.videos?.results?.find(
     (v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
   );
-
-  // Top cast (up to 10)
-  const cast = movie.credits?.cast?.slice(0, 10) || [];
-
-  // Similar movies
-  const similar = movie.similar?.results?.slice(0, 12) || [];
-
-  // Watch providers for US region
+  const cast      = movie.credits?.cast?.slice(0, 10) || [];
+  const similar   = movie.similar?.results?.slice(0, 12) || [];
   const providers = movie['watch/providers']?.results?.US;
-
-  const fav = isFavorite(movie.id);
-  const backdrop = getBackdropUrl(movie.backdrop_path);
+  const fav       = isFavorite(movie.id);
+  const backdrop  = getBackdropUrl(movie.backdrop_path);
 
   return (
     <div className="fade-in min-h-screen">
       {/* Backdrop */}
       <div className="relative h-[55vh] min-h-[360px] overflow-hidden">
         {backdrop && (
-          <img
-            src={backdrop}
-            alt={movie.title}
-            className="w-full h-full object-cover object-top"
-          />
+          <img src={backdrop} alt={movie.title} className="w-full h-full object-cover object-top" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-r from-surface/70 to-transparent" />
 
-        {/* Back button */}
         <Link
           to="/"
           className="absolute top-20 left-4 sm:left-8 flex items-center gap-1 text-sm text-zinc-300 hover:text-white bg-black/40 hover:bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-sm transition-all"
         >
-          <ChevronLeft size={16} /> Back
+          <ChevronLeft size={16} /> Quay lại
         </Link>
       </div>
 
-      {/* Main content */}
+      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-48 relative z-10 pb-16">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Poster */}
@@ -101,14 +73,12 @@ export default function MovieDetail() {
 
           {/* Info */}
           <div className="flex-1 pt-4 md:pt-24">
-            <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight">
-              {movie.title}
-            </h1>
+            <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight">{movie.title}</h1>
             {movie.tagline && (
               <p className="text-zinc-400 italic mt-1 text-sm">{movie.tagline}</p>
             )}
 
-            {/* Meta row */}
+            {/* Meta */}
             <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-zinc-300">
               {movie.vote_average > 0 && (
                 <span className="flex items-center gap-1 text-yellow-400 font-semibold">
@@ -131,33 +101,27 @@ export default function MovieDetail() {
               )}
             </div>
 
-            {/* Genres */}
+            {/* Thể loại */}
             {movie.genres?.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4">
                 {movie.genres.map((g) => (
-                  <span
-                    key={g.id}
-                    className="text-xs font-medium px-3 py-1 rounded-full bg-surface-elevated border border-white/10 text-zinc-300"
-                  >
+                  <span key={g.id} className="text-xs font-medium px-3 py-1 rounded-full bg-surface-elevated border border-white/10 text-zinc-300">
                     {g.name}
                   </span>
                 ))}
               </div>
             )}
 
-            {/* Overview */}
+            {/* Nội dung */}
             {movie.overview && (
               <p className="mt-5 text-zinc-300 leading-relaxed max-w-2xl">{movie.overview}</p>
             )}
 
-            {/* Actions */}
+            {/* Buttons */}
             <div className="flex flex-wrap gap-3 mt-6">
               {trailer && (
-                <button
-                  onClick={() => setTrailerKey(trailer.key)}
-                  className="btn-primary"
-                >
-                  <Play size={18} fill="white" /> Watch Trailer
+                <button onClick={() => setTrailer(trailer.key)} className="btn-primary">
+                  <Play size={18} fill="white" /> Xem Trailer
                 </button>
               )}
               <button
@@ -165,15 +129,15 @@ export default function MovieDetail() {
                 className={`btn-secondary ${fav ? 'text-brand' : ''}`}
               >
                 <Heart size={18} fill={fav ? 'currentColor' : 'none'} />
-                {fav ? 'In Favorites' : 'Add to Favorites'}
+                {fav ? 'Đã yêu thích' : 'Thêm vào yêu thích'}
               </button>
             </div>
 
-            {/* Watch providers */}
+            {/* Nền tảng xem */}
             {providers && (
               <div className="mt-6">
                 <p className="text-xs text-zinc-500 mb-2 flex items-center gap-1">
-                  <Globe size={12} /> Available on (US)
+                  <Globe size={12} /> Xem trực tuyến tại (Mỹ)
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {(providers.flatrate || providers.free || providers.ads || []).map((p) => (
@@ -194,11 +158,11 @@ export default function MovieDetail() {
           </div>
         </div>
 
-        {/* Cast */}
+        {/* Diễn viên */}
         {cast.length > 0 && (
           <section className="mt-14">
-            <h2 className="section-title">Cast</h2>
-            <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-thin">
+            <h2 className="section-title">Diễn Viên</h2>
+            <div className="flex gap-4 overflow-x-auto pb-3">
               {cast.map((person) => (
                 <div key={person.id} className="shrink-0 w-24 text-center">
                   <div className="w-24 h-24 rounded-full overflow-hidden bg-surface-elevated mx-auto ring-2 ring-white/10">
@@ -217,19 +181,16 @@ export default function MovieDetail() {
           </section>
         )}
 
-        {/* Similar movies */}
+        {/* Phim tương tự */}
         {similar.length > 0 && (
           <section className="mt-14">
-            <h2 className="section-title">Similar Movies</h2>
+            <h2 className="section-title">Phim Tương Tự</h2>
             <MovieGrid movies={similar} loading={false} error={null} />
           </section>
         )}
       </div>
 
-      {/* Trailer modal */}
-      {trailerKey && (
-        <TrailerModal videoKey={trailerKey} onClose={() => setTrailerKey(null)} />
-      )}
+      {trailerKey && <TrailerModal videoKey={trailerKey} onClose={() => setTrailer(null)} />}
     </div>
   );
 }

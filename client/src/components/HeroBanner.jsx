@@ -53,7 +53,7 @@ export default function HeroBanner({ movies }) {
 
           <div className="flex items-center gap-3">
             <Link to={`/movie/${movie.id}`} className="btn-primary">
-              <Info size={18} /> More Info
+              <Info size={18} /> Xem chi tiết
             </Link>
           </div>
         </div>

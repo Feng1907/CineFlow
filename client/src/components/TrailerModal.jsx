@@ -25,7 +25,7 @@ export default function TrailerModal({ videoKey, onClose }) {
         <button
           onClick={onClose}
           className="absolute top-3 right-3 z-10 bg-black/70 hover:bg-black text-white p-1.5 rounded-full transition-colors"
-          aria-label="Close trailer"
+          aria-label="Đóng trailer"
         >
           <X size={20} />
         </button>
@@ -34,7 +34,7 @@ export default function TrailerModal({ videoKey, onClose }) {
           allow="autoplay; encrypted-media"
           allowFullScreen
           className="w-full h-full border-0"
-          title="Movie Trailer"
+          title="Trailer phim"
         />
       </div>
     </div>

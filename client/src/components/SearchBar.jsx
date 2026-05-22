@@ -1,6 +1,6 @@
 import { Search, X } from 'lucide-react';
 
-export default function SearchBar({ value, onChange, onClear, placeholder = 'Search movies...' }) {
+export default function SearchBar({ value, onChange, onClear, placeholder = 'Nhập tên phim...' }) {
   return (
     <div className="relative w-full max-w-2xl mx-auto">
       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
@@ -16,7 +16,7 @@ export default function SearchBar({ value, onChange, onClear, placeholder = 'Sea
         <button
           onClick={onClear}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition-colors"
-          aria-label="Clear search"
+          aria-label="Xóa tìm kiếm"
         >
           <X size={18} />
         </button>

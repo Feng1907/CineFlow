@@ -55,7 +55,7 @@ export default function TopMovies({ movies = [], loading }) {
                 <span className="text-xs text-zinc-400">{formatRating(movie.vote_average)}</span>
                 <span className="text-zinc-600 text-xs">·</span>
                 <span className="text-xs text-zinc-500">
-                  {(movie.vote_count / 1000).toFixed(1)}k votes
+                  {(movie.vote_count / 1000).toFixed(1)}k lượt
                 </span>
               </div>
             </div>
