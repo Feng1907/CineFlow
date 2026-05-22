@@ -25,7 +25,7 @@ export default function HeroBanner({ movies }) {
 
   return (
     <>
-      <div className="relative h-[75vh] min-h-[500px] max-h-[780px] overflow-hidden">
+      <div className="relative h-[75vh] min-h-[500px] max-h-[780px] overflow-hidden mt-16">
         {/* Backdrop */}
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
@@ -35,7 +35,7 @@ export default function HeroBanner({ movies }) {
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-black/20" />
 
         {/* Content */}
-        <div className="relative h-full flex items-end pt-16 pb-20 px-4 sm:px-10 lg:px-16 max-w-7xl mx-auto">
+        <div className="relative h-full flex items-end pb-20 px-4 sm:px-10 lg:px-16 max-w-7xl mx-auto">
           <div className="max-w-2xl fade-in" key={movie.id}>
             {/* Meta */}
             <div className="flex items-center gap-3 mb-3">
