@@ -21,7 +21,7 @@ function CarouselCard({ movie, mediaType }) {
     timerRef.current = setTimeout(() => {
       if (ref.current) setCardRect(ref.current.getBoundingClientRect());
       setHovered(true);
-    }, 450);
+    }, 200);
   };
 
   const handleLeave = () => {

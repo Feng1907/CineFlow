@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 
 const ToastContext = createContext(null);
 
@@ -6,14 +6,28 @@ let _id = 0;
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+  const timers = useRef(new Map()); // track all active timeouts
+
+  // Cleanup tất cả timer khi ToastProvider unmount
+  useEffect(() => {
+    return () => { timers.current.forEach((t) => clearTimeout(t)); };
+  }, []);
 
   const showToast = useCallback((message, type = 'success') => {
     const id = ++_id;
     setToasts((prev) => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 3000);
+
+    const timer = setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+      timers.current.delete(id);
+    }, 3000);
+
+    timers.current.set(id, timer);
   }, []);
 
   const dismiss = useCallback((id) => {
+    clearTimeout(timers.current.get(id));
+    timers.current.delete(id);
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
@@ -30,15 +44,11 @@ export const useToast = () => useContext(ToastContext);
 // ── Renderer ──────────────────────────────────────────────
 const STYLES = {
   success: 'bg-green-600 border-green-500',
-  error:   'bg-brand   border-red-500',
+  error:   'bg-brand border-red-500',
   info:    'bg-blue-600 border-blue-500',
 };
 
-const ICONS = {
-  success: '✓',
-  error:   '✕',
-  info:    'ℹ',
-};
+const ICONS = { success: '✓', error: '✕', info: 'ℹ' };
 
 function ToastContainer({ toasts, onDismiss }) {
   if (!toasts.length) return null;
@@ -47,7 +57,7 @@ function ToastContainer({ toasts, onDismiss }) {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-white text-sm font-medium pointer-events-auto animate-slideInRight ${STYLES[t.type] || STYLES.info}`}
+          className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-white text-sm font-medium pointer-events-auto animate-slideInRight cursor-pointer ${STYLES[t.type] || STYLES.info}`}
           onClick={() => onDismiss(t.id)}
         >
           <span className="text-base leading-none">{ICONS[t.type]}</span>

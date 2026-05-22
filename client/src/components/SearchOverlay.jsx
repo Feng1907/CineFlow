@@ -20,9 +20,10 @@ export default function SearchOverlay({ onClose }) {
   // Close on Escape
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    const prev = document.body.style.overflow;
     document.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
-    return () => { document.removeEventListener('keydown', handler); document.body.style.overflow = ''; };
+    return () => { document.removeEventListener('keydown', handler); document.body.style.overflow = prev; };
   }, [onClose]);
 
   // Debounced search
@@ -41,8 +42,8 @@ export default function SearchOverlay({ onClose }) {
   }, [query]);
 
   const goTo = (item) => {
-    const type = item.media_type === 'tv' || item.name ? 'movie' : 'movie';
-    navigate(`/movie/${item.id}`);
+    const type = item.media_type === 'tv' || (!item.title && item.name) ? 'tv' : 'movie';
+    navigate(`/${type}/${item.id}`);
     onClose();
   };
 

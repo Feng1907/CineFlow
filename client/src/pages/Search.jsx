@@ -12,6 +12,15 @@ export default function Search() {
   const initialQuery = searchParams.get('q') || '';
 
   const [query, setQuery] = useState(initialQuery);
+
+  // Sync query state khi URL thay đổi từ bên ngoài (e.g., Navbar search)
+  useEffect(() => {
+    const q = searchParams.get('q') || '';
+    if (q && q !== query) {
+      setQuery(q);
+      doSearch(q, 1);
+    }
+  }, [searchParams]);
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -51,7 +60,8 @@ export default function Search() {
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
-  useEffect(() => { if (initialQuery) doSearch(initialQuery, 1); }, []);
+  // Chạy search từ URL param khi component mount lần đầu
+  useEffect(() => { if (initialQuery) doSearch(initialQuery, 1); }, []); // eslint-disable-line
 
   return (
     <div className="fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">

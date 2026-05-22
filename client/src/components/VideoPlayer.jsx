@@ -74,12 +74,13 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
   const toggleAds = () => { setBlockAds((v) => !v); setKey((k) => k + 1); };
 
   useEffect(() => {
+    const prev = document.body.style.overflow;
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
+      document.body.style.overflow = prev;
     };
   }, [onClose]);
 

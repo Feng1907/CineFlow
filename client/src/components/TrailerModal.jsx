@@ -4,12 +4,14 @@ import { X } from 'lucide-react';
 
 export default function TrailerModal({ videoKey, onClose }) {
   useEffect(() => {
+    const prev = document.body.style.overflow;
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
+    // Luôn restore overflow kể cả khi navigate trang trong lúc modal đang mở
     return () => {
       document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
+      document.body.style.overflow = prev;
     };
   }, [onClose]);
 

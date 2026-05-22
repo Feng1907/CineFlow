@@ -29,7 +29,17 @@ export default function HoverCard({ movie, mediaType, cardRect, onClose }) {
   if (left < 8) left = 8;
   if (left + cardWidth > vw - 8) left = vw - cardWidth - 8;
 
-  const top = cardRect.top + window.scrollY - 20;
+  // Tính top: hiển thị hơi cao hơn card, nhưng không vượt quá bottom viewport
+  const cardHeight = 320; // ước tính chiều cao HoverCard
+  const vh = window.innerHeight;
+  let top = cardRect.top + window.scrollY - 20;
+  // Nếu card bị khuất dưới viewport → đẩy lên trên
+  const bottomEdge = cardRect.top + cardHeight;
+  if (bottomEdge > vh - 16) {
+    top = cardRect.top + window.scrollY - (bottomEdge - vh + 16);
+  }
+  // Không cho lên quá đầu trang
+  if (top - window.scrollY < 72) top = window.scrollY + 72;
 
   // Close on outside click
   useEffect(() => {
