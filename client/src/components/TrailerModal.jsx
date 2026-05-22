@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 export default function TrailerModal({ videoKey, onClose }) {
-  // Close on Escape key
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
@@ -13,9 +13,11 @@ export default function TrailerModal({ videoKey, onClose }) {
     };
   }, [onClose]);
 
-  return (
+  // createPortal đảm bảo modal render trực tiếp vào document.body
+  // tránh bị ảnh hưởng bởi CSS transform/animation của component cha
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
@@ -37,6 +39,7 @@ export default function TrailerModal({ videoKey, onClose }) {
           title="Trailer phim"
         />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
