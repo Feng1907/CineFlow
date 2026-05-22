@@ -21,7 +21,8 @@ export default function TrailerModal({ videoKey, onClose }) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
+        className="relative bg-black rounded-2xl overflow-hidden shadow-2xl"
+        style={{ width: 'calc(100vw - 2rem)', maxWidth: '56rem', aspectRatio: '16/9' }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
