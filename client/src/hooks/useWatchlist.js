@@ -18,7 +18,7 @@ export function useWatchlist() {
     axios.get(`${API}/user/watchlist`, { headers: { Authorization: `Bearer ${getToken()}` } })
       .then((res) => setWatchlist(res.data.results || []))
       .catch(() => {});
-  }, [user]);
+  }, [user, getToken]);
 
   useEffect(() => {
     if (!user) localStorage.setItem(LS_KEY, JSON.stringify(watchlist));

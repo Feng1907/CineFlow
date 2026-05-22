@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 
 export default function TrailerModal({ videoKey, onClose }) {
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     const prev = document.body.style.overflow;
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
@@ -34,10 +35,17 @@ export default function TrailerModal({ videoKey, onClose }) {
         >
           <X size={20} />
         </button>
+        {/* Loading skeleton */}
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+            <Loader2 size={36} className="animate-spin text-brand" />
+          </div>
+        )}
         <iframe
           src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`}
           allow="autoplay; encrypted-media"
           allowFullScreen
+          onLoad={() => setLoaded(true)}
           className="w-full h-full border-0"
           title="Trailer phim"
         />

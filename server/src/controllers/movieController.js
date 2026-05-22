@@ -20,8 +20,10 @@ exports.getTopRated = wrap((req) => tmdb.getTopRated(req.query.page));
 exports.getNowPlaying = wrap((req) => tmdb.getNowPlaying(req.query.page));
 
 exports.search = wrap((req) => {
-  const { query, page } = req.query;
+  const { query, page, type } = req.query;
   if (!query) throw Object.assign(new Error('query param is required'), { status: 400 });
+  if (type === 'tv')    return tmdb.searchTV(query, page);
+  if (type === 'multi') return tmdb.searchMulti(query, page);
   return tmdb.searchMovies(query, page);
 });
 

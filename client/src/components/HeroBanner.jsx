@@ -25,7 +25,8 @@ export default function HeroBanner({ movies, onRefresh }) {
   const goTo = useCallback((i) => {
     setIndex((i + total) % total);
     setProgress(0);
-    startRef.current = Date.now();
+    startRef.current = Date.now(); // reset timer khi chuyển slide thủ công
+    setPaused(false);              // bỏ pause nếu đang pause
   }, [total]);
 
   const next = useCallback(() => goTo(index + 1), [goTo, index]);

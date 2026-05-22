@@ -18,7 +18,7 @@ export function useWatchHistory() {
     axios.get(`${API}/user/history`, { headers: { Authorization: `Bearer ${getToken()}` } })
       .then((res) => setHistory(res.data.results || []))
       .catch(() => {});
-  }, [user]);
+  }, [user, getToken]);
 
   useEffect(() => {
     if (!user) localStorage.setItem(LS_KEY, JSON.stringify(history));

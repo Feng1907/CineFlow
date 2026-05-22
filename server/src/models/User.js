@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   favorites:    { type: [movieRefSchema], default: [] },
   watchlist:    { type: [movieRefSchema], default: [] },
   watchHistory: { type: [historySchema], default: [] },
+  refreshToken: { type: String, default: null }, // lưu refresh token
 }, { timestamps: true });
 
 // Hash password before saving (async — no next() in Mongoose 6+)

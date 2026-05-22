@@ -26,6 +26,13 @@ module.exports = {
   searchMovies: (query, page = 1) =>
     get('/search/movie', { query, page, include_adult: false }),
 
+  searchTV: (query, page = 1) =>
+    get('/search/tv', { query, page, include_adult: false }),
+
+  // Multi-search: trả về cả phim lẫn TV trong 1 request
+  searchMulti: (query, page = 1) =>
+    get('/search/multi', { query, page, include_adult: false }),
+
   getMovieDetail: (id) =>
     get(`/movie/${id}`, {
       append_to_response: 'credits,videos,similar,watch/providers',

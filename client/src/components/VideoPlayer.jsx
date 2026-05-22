@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, AlertTriangle, Server, RefreshCw, ChevronDown, Shield } from 'lucide-react';
+import { X, AlertTriangle, Server, RefreshCw, ChevronDown, Shield, Loader2 } from 'lucide-react';
 
 const SERVERS = [
   {
@@ -53,11 +53,27 @@ const SERVERS = [
   },
 ];
 
-export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, title, onClose }) {
+// Lưu tiến độ xem (tập phim cuối)
+const saveProgress = (tmdbId, type, season, episode, title, posterPath) => {
+  try {
+    const key = `cineflow_progress_${type}_${tmdbId}`;
+    localStorage.setItem(key, JSON.stringify({ tmdbId, type, season, episode, title, posterPath, ts: Date.now() }));
+  } catch {}
+};
+
+export const getProgress = (tmdbId, type) => {
+  try {
+    const raw = localStorage.getItem(`cineflow_progress_${type}_${tmdbId}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+};
+
+export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, title, posterPath, onClose }) {
   const [serverId, setServerId] = useState('embedsu');
   const [key, setKey]           = useState(0);
   const [blockAds, setBlockAds] = useState(true);
   const [dropOpen, setDrop]     = useState(false);
+  const [loaded, setLoaded]     = useState(false);
 
   const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
   const src = type === 'tv' && season && episode
@@ -67,22 +83,27 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
   const switchServer = useCallback((id) => {
     setServerId(id);
     setKey((k) => k + 1);
+    setLoaded(false);
     setDrop(false);
   }, []);
 
-  const reload = () => setKey((k) => k + 1);
-  const toggleAds = () => { setBlockAds((v) => !v); setKey((k) => k + 1); };
+  const reload = () => { setKey((k) => k + 1); setLoaded(false); };
+  const toggleAds = () => { setBlockAds((v) => !v); setKey((k) => k + 1); setLoaded(false); };
 
   useEffect(() => {
     const prev = document.body.style.overflow;
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
+    // Lưu tiến độ khi mở player
+    if (type === 'tv' && season && episode) {
+      saveProgress(tmdbId, type, season, episode, title, posterPath);
+    }
     return () => {
       document.removeEventListener('keydown', handler);
       document.body.style.overflow = prev;
     };
-  }, [onClose]);
+  }, [onClose, tmdbId, type, season, episode]);
 
   return createPortal(
     <div className="fixed inset-0 z-[999] flex flex-col bg-black">
@@ -160,6 +181,12 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
 
       {/* Player */}
       <div className="flex-1 relative bg-black" onClick={() => setDrop(false)}>
+        {!loaded && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-900 gap-3 z-10">
+            <Loader2 size={40} className="animate-spin text-brand" />
+            <p className="text-sm text-zinc-400">Đang tải player từ {server.label}...</p>
+          </div>
+        )}
         <iframe
           key={key}
           src={src}
@@ -168,6 +195,7 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
           sandbox={blockAds
             ? 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-fullscreen'
             : undefined}
+          onLoad={() => setLoaded(true)}
           className="w-full h-full border-0"
           title={title}
         />

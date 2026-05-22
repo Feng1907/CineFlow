@@ -7,7 +7,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useWatchHistory } from '../hooks/useWatchHistory';
 import TrailerModal from '../components/TrailerModal';
-import VideoPlayer from '../components/VideoPlayer';
+import VideoPlayer, { getProgress } from '../components/VideoPlayer';
 import MovieGrid from '../components/MovieGrid';
 import { DetailSkeleton } from '../components/LoadingSkeleton';
 import ErrorState from '../components/ErrorState';
@@ -91,6 +91,7 @@ export default function TVDetail() {
   const backdrop  = getBackdropUrl(show.backdrop_path);
   const fav       = isFavorite(show.id);
   const inList    = isInWatchlist(show.id);
+  const progress  = getProgress(show.id, 'tv');
 
   return (
     <div className="fade-in min-h-screen">
@@ -143,9 +144,19 @@ export default function TVDetail() {
             {show.overview && <p className="mt-5 text-zinc-300 leading-relaxed max-w-2xl">{show.overview}</p>}
 
             <div className="flex flex-wrap gap-3 mt-6">
+              {/* Nút Xem tiếp nếu có tiến độ */}
+              {progress && (
+                <button
+                  onClick={() => setPlayer({ season: progress.season, episode: progress.episode })}
+                  className="btn-primary"
+                >
+                  <MonitorPlay size={18} /> Xem tiếp S{progress.season}E{progress.episode}
+                </button>
+              )}
               {trailer && (
-                <button onClick={() => { setTrailer(trailer.key); addToHistory({ ...show, type: 'tv' }); }} className="btn-primary">
-                  <Play size={18} fill="white" /> Xem Trailer
+                <button onClick={() => { setTrailer(trailer.key); addToHistory({ ...show, type: 'tv' }); }}
+                  className={progress ? 'btn-secondary' : 'btn-primary'}>
+                  <Play size={18} fill={progress ? 'none' : 'white'} /> Xem Trailer
                 </button>
               )}
               <button onClick={() => toggleFavorite(show)} className={`btn-secondary ${fav ? 'text-brand' : ''}`}>
@@ -258,6 +269,7 @@ export default function TVDetail() {
           season={player.season}
           episode={player.episode}
           title={show.name}
+          posterPath={show.poster_path}
           onClose={() => setPlayer(null)}
         />
       )}
