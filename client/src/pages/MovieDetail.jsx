@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Play, Heart, Plus, Check, Star, Clock, Calendar, ChevronLeft, Globe, MessageSquare } from 'lucide-react';
+import { Play, Heart, Plus, Check, Star, Clock, Calendar, ChevronLeft, Globe, MessageSquare, MonitorPlay } from 'lucide-react';
 import { getMovieDetail } from '../api/movieApi';
 import { getBackdropUrl, getPosterUrl, getAvatarUrl, formatYear, formatRuntime, formatRating } from '../utils/imageUrl';
 import { useFavorites } from '../hooks/useFavorites';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useWatchHistory } from '../hooks/useWatchHistory';
 import TrailerModal from '../components/TrailerModal';
+import VideoPlayer from '../components/VideoPlayer';
 import MovieGrid from '../components/MovieGrid';
 import { DetailSkeleton } from '../components/LoadingSkeleton';
 import ErrorState from '../components/ErrorState';
@@ -16,7 +17,8 @@ export default function MovieDetail() {
   const [movie, setMovie]       = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
-  const [trailerKey, setTrailer] = useState(null);
+  const [trailerKey, setTrailer]   = useState(null);
+  const [showPlayer, setPlayer]    = useState(false);
 
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
@@ -44,6 +46,12 @@ export default function MovieDetail() {
   // Content rating (US)
   const usRelease = movie.release_dates?.results?.find((r) => r.iso_3166_1 === 'US');
   const rating    = usRelease?.release_dates?.find((r) => r.certification)?.certification;
+
+  // Phim đang chiếu rạp hoặc sắp chiếu → chỉ có trailer, chưa xem được
+  const releaseDate  = movie.release_date ? new Date(movie.release_date) : null;
+  const isInTheaters = movie.status === 'Released' && releaseDate && (Date.now() - releaseDate) < 60 * 24 * 60 * 60 * 1000; // dưới 60 ngày
+  const isUpcoming   = movie.status === 'In Production' || movie.status === 'Post Production' || (releaseDate && releaseDate > new Date());
+  const canWatch     = !isUpcoming && movie.status !== 'Planned';
 
   const fav    = isFavorite(movie.id);
   const inList = isInWatchlist(movie.id);
@@ -114,9 +122,19 @@ export default function MovieDetail() {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-3 mt-6">
+              {/* Nút Xem Phim — chỉ hiện nếu phim không phải upcoming */}
+              {canWatch && (
+                <button
+                  onClick={() => { setPlayer(true); addToHistory(movie); }}
+                  className="btn-primary"
+                >
+                  <MonitorPlay size={18} /> Xem Phim
+                </button>
+              )}
+
               {trailer && (
-                <button onClick={handleTrailer} className="btn-primary">
-                  <Play size={18} fill="white" /> Xem Trailer
+                <button onClick={handleTrailer} className={canWatch ? 'btn-secondary' : 'btn-primary'}>
+                  <Play size={18} fill={canWatch ? 'none' : 'white'} /> Xem Trailer
                 </button>
               )}
               <button onClick={() => toggleFavorite(movie)} className={`btn-secondary ${fav ? 'text-brand' : ''}`}>
@@ -200,6 +218,14 @@ export default function MovieDetail() {
       </div>
 
       {trailerKey && <TrailerModal videoKey={trailerKey} onClose={() => setTrailer(null)} />}
+      {showPlayer && (
+        <VideoPlayer
+          tmdbId={movie.id}
+          type="movie"
+          title={movie.title}
+          onClose={() => setPlayer(false)}
+        />
+      )}
     </div>
   );
 }

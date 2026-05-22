@@ -1,30 +1,45 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Play, Heart, Plus, Check, Star, Clock, Calendar, ChevronLeft, Globe, ChevronDown } from 'lucide-react';
+import { Play, Heart, Plus, Check, Star, Clock, Calendar, ChevronLeft, Globe, ChevronDown, MonitorPlay } from 'lucide-react';
 import { getTVDetail, getTVSeason } from '../api/movieApi';
 import { getBackdropUrl, getPosterUrl, getAvatarUrl, formatYear, formatRating } from '../utils/imageUrl';
 import { useFavorites } from '../hooks/useFavorites';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useWatchHistory } from '../hooks/useWatchHistory';
 import TrailerModal from '../components/TrailerModal';
+import VideoPlayer from '../components/VideoPlayer';
 import MovieGrid from '../components/MovieGrid';
 import { DetailSkeleton } from '../components/LoadingSkeleton';
 import ErrorState from '../components/ErrorState';
 
-function EpisodeCard({ ep, showNumber }) {
+function EpisodeCard({ ep, onWatch }) {
   const still = ep.still_path
     ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
     : '/placeholder-poster.svg';
   return (
-    <div className="flex gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors">
-      <div className="shrink-0 w-32 sm:w-40 aspect-video bg-surface-elevated rounded-lg overflow-hidden">
+    <div className="flex gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group">
+      {/* Thumbnail + play overlay */}
+      <button
+        onClick={onWatch}
+        className="shrink-0 w-32 sm:w-40 aspect-video bg-surface-elevated rounded-lg overflow-hidden relative"
+      >
         <img src={still} alt={ep.name} className="w-full h-full object-cover" onError={(e) => { e.target.src = '/placeholder-poster.svg'; }} />
-      </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+          <MonitorPlay size={28} className="text-white drop-shadow-lg" />
+        </div>
+      </button>
+
       <div className="flex-1 min-w-0">
         <p className="text-xs text-zinc-500 mb-0.5">Tập {ep.episode_number}</p>
         <p className="text-sm font-semibold text-white leading-snug">{ep.name}</p>
         {ep.runtime > 0 && <p className="text-xs text-zinc-500 mt-0.5">{ep.runtime} phút</p>}
         {ep.overview && <p className="text-xs text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">{ep.overview}</p>}
+        <button
+          onClick={onWatch}
+          className="mt-2 flex items-center gap-1.5 text-xs text-brand hover:text-red-400 transition-colors font-medium"
+        >
+          <MonitorPlay size={13} /> Xem tập này
+        </button>
       </div>
     </div>
   );
@@ -35,7 +50,8 @@ export default function TVDetail() {
   const [show, setShow]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
-  const [trailerKey, setTrailer] = useState(null);
+  const [trailerKey, setTrailer]  = useState(null);
+  const [player, setPlayer]       = useState(null); // { season, episode }
   const [selectedSeason, setSeason] = useState(1);
   const [seasonData, setSeasonData] = useState(null);
   const [seasonLoading, setSeasonLoading] = useState(false);
@@ -194,7 +210,13 @@ export default function TVDetail() {
               </div>
             ) : seasonData?.episodes?.length > 0 ? (
               <div className="divide-y divide-white/5">
-                {seasonData.episodes.map((ep) => <EpisodeCard key={ep.id} ep={ep} />)}
+                {seasonData.episodes.map((ep) => (
+                  <EpisodeCard
+                    key={ep.id}
+                    ep={ep}
+                    onWatch={() => setPlayer({ season: selectedSeason, episode: ep.episode_number })}
+                  />
+                ))}
               </div>
             ) : (
               <p className="text-zinc-500 text-sm py-4">Chưa có thông tin về tập phim.</p>
@@ -229,6 +251,16 @@ export default function TVDetail() {
       </div>
 
       {trailerKey && <TrailerModal videoKey={trailerKey} onClose={() => setTrailer(null)} />}
+      {player && (
+        <VideoPlayer
+          tmdbId={show.id}
+          type="tv"
+          season={player.season}
+          episode={player.episode}
+          title={show.name}
+          onClose={() => setPlayer(null)}
+        />
+      )}
     </div>
   );
 }
