@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const LS_KEY = 'cineflow_watchlist';
@@ -9,9 +10,9 @@ const loadLocal = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)) 
 
 export function useWatchlist() {
   const { user, getToken } = useAuth();
+  const { showToast } = useToast();
   const [watchlist, setWatchlist] = useState(loadLocal);
 
-  // Sync from server when logged in
   useEffect(() => {
     if (!user) return;
     axios.get(`${API}/user/watchlist`, { headers: { Authorization: `Bearer ${getToken()}` } })
@@ -19,7 +20,6 @@ export function useWatchlist() {
       .catch(() => {});
   }, [user]);
 
-  // Persist locally when not logged in
   useEffect(() => {
     if (!user) localStorage.setItem(LS_KEY, JSON.stringify(watchlist));
   }, [watchlist, user]);
@@ -28,21 +28,31 @@ export function useWatchlist() {
 
   const toggleWatchlist = useCallback(async (movie) => {
     const exists = watchlist.some((m) => m.id === movie.id);
-    const item = { id: movie.id, title: movie.title || movie.name, poster_path: movie.poster_path, type: movie.media_type || (movie.name ? 'tv' : 'movie') };
+    const item = {
+      id: movie.id,
+      title: movie.title || movie.name,
+      poster_path: movie.poster_path,
+      type: movie.media_type || (movie.name ? 'tv' : 'movie'),
+    };
 
-    if (user) {
-      const headers = { Authorization: `Bearer ${getToken()}` };
-      if (exists) {
-        await axios.delete(`${API}/user/watchlist/${movie.id}`, { headers });
-        setWatchlist((p) => p.filter((m) => m.id !== movie.id));
+    try {
+      if (user) {
+        const headers = { Authorization: `Bearer ${getToken()}` };
+        if (exists) {
+          await axios.delete(`${API}/user/watchlist/${movie.id}`, { headers });
+          setWatchlist((p) => p.filter((m) => m.id !== movie.id));
+        } else {
+          await axios.post(`${API}/user/watchlist`, item, { headers });
+          setWatchlist((p) => [item, ...p]);
+        }
       } else {
-        await axios.post(`${API}/user/watchlist`, item, { headers });
-        setWatchlist((p) => [item, ...p]);
+        setWatchlist((p) => exists ? p.filter((m) => m.id !== movie.id) : [item, ...p]);
       }
-    } else {
-      setWatchlist((p) => exists ? p.filter((m) => m.id !== movie.id) : [item, ...p]);
+      showToast(exists ? 'Đã xóa khỏi danh sách' : '✓ Đã thêm vào danh sách', exists ? 'info' : 'success');
+    } catch {
+      showToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
     }
-  }, [watchlist, user, getToken]);
+  }, [watchlist, user, getToken, showToast]);
 
   return { watchlist, isInWatchlist, toggleWatchlist };
 }

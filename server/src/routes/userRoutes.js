@@ -18,4 +18,7 @@ router.get('/history',            u.getHistory);
 router.post('/history',           u.addHistory);
 router.delete('/history',         u.clearHistory);
 
+router.patch('/profile',          u.updateProfile);
+router.patch('/password',         u.changePassword);
+
 module.exports = router;

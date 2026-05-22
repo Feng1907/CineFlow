@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Film, Menu, X, ChevronDown, Tag, Globe, Search, Heart, LogIn, LogOut, User, List } from 'lucide-react';
+import { Film, Menu, X, ChevronDown, Tag, Globe, Search, Heart, LogIn, LogOut, User, Bookmark } from 'lucide-react';
 import { getGenres } from '../api/movieApi';
 import { COUNTRIES } from '../utils/constants';
 import { useAuth } from '../context/AuthContext';
@@ -54,9 +54,17 @@ function UserMenu({ user, logout }) {
             <p className="text-sm font-semibold text-white truncate">{user.name}</p>
             <p className="text-xs text-zinc-500 truncate">{user.email}</p>
           </div>
+          <Link to="/profile" onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">
+            <User size={14} /> Tài khoản
+          </Link>
           <Link to="/favorites" onClick={() => setOpen(false)}
             className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">
             <Heart size={14} /> Yêu thích
+          </Link>
+          <Link to="/watchlist" onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">
+            <Bookmark size={14} /> Danh sách của tôi
           </Link>
           <button onClick={() => { logout(); setOpen(false); }}
             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left">
@@ -126,6 +134,11 @@ export default function Navbar() {
               {!user && (
                 <Link to="/favorites" className="flex items-center gap-1 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
                   <Heart size={13} /> Yêu thích
+                </Link>
+              )}
+              {user && (
+                <Link to="/watchlist" className="flex items-center gap-1 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                  <Bookmark size={13} /> Danh sách
                 </Link>
               )}
             </div>

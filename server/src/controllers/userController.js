@@ -88,3 +88,36 @@ exports.clearHistory = async (req, res, next) => {
     res.json({ success: true });
   } catch (err) { next(err); }
 };
+
+// ── Profile ───────────────────────────────────────────────
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (!name?.trim()) return res.status(400).json({ success: false, error: 'Tên không được để trống' });
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { name: name.trim() } },
+      { new: true }
+    );
+    res.json({ success: true, user });
+  } catch (err) { next(err); }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword)
+      return res.status(400).json({ success: false, error: 'Vui lòng điền đầy đủ thông tin' });
+    if (newPassword.length < 6)
+      return res.status(400).json({ success: false, error: 'Mật khẩu mới phải có ít nhất 6 ký tự' });
+
+    const user = await User.findById(req.user._id);
+    if (!(await user.comparePassword(currentPassword)))
+      return res.status(401).json({ success: false, error: 'Mật khẩu hiện tại không đúng' });
+
+    user.passwordHash = newPassword;
+    await user.save();
+    res.json({ success: true, message: 'Đổi mật khẩu thành công' });
+  } catch (err) { next(err); }
+};

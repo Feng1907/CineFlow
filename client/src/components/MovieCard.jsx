@@ -7,21 +7,26 @@ export default function MovieCard({ movie }) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const fav = isFavorite(movie.id);
 
+  // Detect TV show: media_type === 'tv' hoặc có field `name` nhưng không có `title`
+  const type  = movie.media_type === 'tv' || (!movie.title && movie.name) ? 'tv' : 'movie';
+  const title = movie.title || movie.name || '';
+  const date  = movie.release_date || movie.first_air_date;
+
   const handleFav = (e) => {
-    e.preventDefault(); // don't navigate
-    toggleFavorite(movie);
+    e.preventDefault();
+    toggleFavorite({ ...movie, title });
   };
 
   return (
     <Link
-      to={`/movie/${movie.id}`}
+      to={`/${type}/${movie.id}`}
       className="group relative block bg-surface-card rounded-xl overflow-hidden card-hover"
     >
       {/* Poster */}
       <div className="aspect-[2/3] overflow-hidden bg-surface-elevated">
         <img
           src={getPosterUrl(movie.poster_path)}
-          alt={movie.title}
+          alt={title}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
@@ -30,6 +35,13 @@ export default function MovieCard({ movie }) {
 
       {/* Overlay on hover */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* TV badge */}
+      {type === 'tv' && (
+        <div className="absolute top-2 left-2 text-[10px] font-bold bg-brand/90 text-white px-1.5 py-0.5 rounded">
+          TV
+        </div>
+      )}
 
       {/* Favorite button */}
       <button
@@ -44,8 +56,8 @@ export default function MovieCard({ movie }) {
         <Heart size={14} fill={fav ? 'currentColor' : 'none'} />
       </button>
 
-      {/* Rating badge */}
-      {movie.vote_average > 0 && (
+      {/* Rating badge — only show if no TV badge */}
+      {movie.vote_average > 0 && type === 'movie' && (
         <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 text-yellow-400 text-xs font-semibold px-2 py-0.5 rounded-full">
           <Star size={11} fill="currentColor" />
           {formatRating(movie.vote_average)}
@@ -54,8 +66,8 @@ export default function MovieCard({ movie }) {
 
       {/* Title + year */}
       <div className="p-3">
-        <p className="font-semibold text-sm leading-tight truncate text-white">{movie.title}</p>
-        <p className="text-xs text-zinc-400 mt-0.5">{formatYear(movie.release_date)}</p>
+        <p className="font-semibold text-sm leading-tight truncate text-white">{title}</p>
+        <p className="text-xs text-zinc-400 mt-0.5">{formatYear(date)}</p>
       </div>
     </Link>
   );

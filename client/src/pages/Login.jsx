@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Film, Eye, EyeOff, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function Login() {
   const [form, setForm]     = useState({ email: '', password: '' });
@@ -10,6 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const { login }  = useAuth();
+  const { showToast } = useToast();
   const navigate   = useNavigate();
   const location   = useLocation();
   const from = location.state?.from || '/';
@@ -21,6 +23,7 @@ export default function Login() {
     setError(''); setLoading(true);
     try {
       await login(form.email, form.password);
+      showToast('👋 Đăng nhập thành công!', 'success');
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || 'Đăng nhập thất bại');

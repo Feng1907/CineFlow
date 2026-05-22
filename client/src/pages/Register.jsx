@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Film, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function Register() {
   const [form, setForm]     = useState({ name: '', email: '', password: '', confirm: '' });
@@ -9,7 +10,8 @@ export default function Register() {
   const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { register } = useAuth();
+  const { register }  = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handle = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -20,6 +22,7 @@ export default function Register() {
     setError(''); setLoading(true);
     try {
       await register(form.name, form.email, form.password);
+      showToast('🎉 Tạo tài khoản thành công!', 'success');
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Đăng ký thất bại');
