@@ -76,7 +76,7 @@ exports.addHistory = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { $push: { watchHistory: { $each: [item], $position: 0, $slice: 20 } } },
-      { new: true }
+      { returnDocument: 'after' }
     );
     res.json({ success: true, results: user.watchHistory });
   } catch (err) { next(err); }
@@ -98,7 +98,7 @@ exports.updateProfile = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { $set: { name: name.trim() } },
-      { new: true }
+      { returnDocument: 'after' }
     );
     res.json({ success: true, user });
   } catch (err) { next(err); }
