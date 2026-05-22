@@ -114,6 +114,9 @@ export default function VideoPlayer({ tmdbId, type = 'movie', season, episode, t
           src={src}
           allowFullScreen
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          // sandbox chặn popup/tab mới từ quảng cáo bên trong iframe
+          // KHÔNG có allow-popups và allow-top-navigation
+          sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-fullscreen"
           className="w-full h-full border-0"
           title={title}
         />
