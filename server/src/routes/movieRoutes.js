@@ -1,14 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/movieController');
+const movie = require('../controllers/movieController');
+const tv    = require('../controllers/tvController');
 
-router.get('/movies/popular', ctrl.getPopular);
-router.get('/movies/trending', ctrl.getTrending);
-router.get('/movies/top-rated', ctrl.getTopRated);
-router.get('/movies/now-playing', ctrl.getNowPlaying);
-router.get('/movies/search', ctrl.search);
-router.get('/movies/discover', ctrl.discover);  // must be before /:id
-router.get('/movies/:id', ctrl.getDetail);
-router.get('/genres/movie', ctrl.getGenres);
+// ── Movies ──────────────────────────────────────────────
+router.get('/movies/popular',     movie.getPopular);
+router.get('/movies/trending',    movie.getTrending);
+router.get('/movies/top-rated',   movie.getTopRated);
+router.get('/movies/now-playing', movie.getNowPlaying);
+router.get('/movies/search',      movie.search);
+router.get('/movies/discover',    movie.discover);   // must be before /:id
+router.get('/movies/:id',         movie.getDetail);
+
+// ── TV Series ────────────────────────────────────────────
+router.get('/tv/popular',         tv.getPopular);
+router.get('/tv/trending',        tv.getTrending);
+router.get('/tv/top-rated',       tv.getTopRated);
+router.get('/tv/on-air',          tv.getOnAir);
+router.get('/tv/discover',        tv.discover);      // must be before /:id
+router.get('/tv/:id',             tv.getDetail);
+
+// ── Genres ───────────────────────────────────────────────
+router.get('/genres/movie',       movie.getGenres);
+router.get('/genres/tv',          tv.getGenres);
 
 module.exports = router;

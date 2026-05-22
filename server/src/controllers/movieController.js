@@ -30,6 +30,6 @@ exports.getDetail = wrap((req) => tmdb.getMovieDetail(req.params.id));
 exports.getGenres = wrap(() => tmdb.getGenres());
 
 exports.discover = wrap((req) => {
-  const { genre_id, sort_by, page } = req.query;
-  return tmdb.discoverMovies({ genre_id, sort_by, page });
+  const { genre_id, country, sort_by, page } = req.query;
+  return tmdb.discoverMovies({ genre_id, country, sort_by, page });
 });

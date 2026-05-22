@@ -6,6 +6,10 @@ import MovieDetail from './pages/MovieDetail';
 import Search from './pages/Search';
 import Favorites from './pages/Favorites';
 import Genre from './pages/Genre';
+import Country from './pages/Country';
+import NowPlaying from './pages/NowPlaying';
+import TVShows from './pages/TVShows';
+import Movies from './pages/Movies';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -15,12 +19,16 @@ export default function App() {
         <Navbar />
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/movie/:id" element={<MovieDetail />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/genre/:id" element={<Genre />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/"              element={<Home />} />
+            <Route path="/movie/:id"     element={<MovieDetail />} />
+            <Route path="/search"        element={<Search />} />
+            <Route path="/favorites"     element={<Favorites />} />
+            <Route path="/genre/:id"     element={<Genre />} />
+            <Route path="/country/:code" element={<Country />} />
+            <Route path="/now-playing"   element={<NowPlaying />} />
+            <Route path="/tv"            element={<TVShows />} />
+            <Route path="/movies"        element={<Movies />} />
+            <Route path="*"              element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

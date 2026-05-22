@@ -21,5 +21,15 @@ export const getNowPlaying = (page = 1) => api.get('/movies/now-playing', { para
 export const searchMovies = (query, page = 1) => api.get('/movies/search', { params: { query, page } });
 export const getMovieDetail = (id) => api.get(`/movies/${id}`);
 export const getGenres = () => api.get('/genres/movie');
-export const discoverMovies = ({ genre_id, sort_by, page } = {}) =>
-  api.get('/movies/discover', { params: { genre_id, sort_by, page } });
+export const discoverMovies = ({ genre_id, country, sort_by, page } = {}) =>
+  api.get('/movies/discover', { params: { genre_id, country, sort_by, page } });
+
+// TV Series
+export const getTVPopular  = (page = 1) => api.get('/tv/popular',  { params: { page } });
+export const getTVTrending = (tw = 'week') => api.get('/tv/trending', { params: { timeWindow: tw } });
+export const getTVTopRated = (page = 1) => api.get('/tv/top_rated', { params: { page } });
+export const getTVOnAir    = (page = 1) => api.get('/tv/on-air',   { params: { page } });
+export const getTVDetail   = (id) => api.get(`/tv/${id}`);
+export const getTVGenres   = () => api.get('/genres/tv');
+export const discoverTV    = ({ genre_id, country, sort_by, page } = {}) =>
+  api.get('/tv/discover', { params: { genre_id, country, sort_by, page } });

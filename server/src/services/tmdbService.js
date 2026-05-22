@@ -33,12 +33,32 @@ module.exports = {
 
   getGenres: () => get('/genre/movie/list'),
 
-  // Discover movies filtered by genre, sort, etc.
-  discoverMovies: ({ genre_id, sort_by = 'popularity.desc', page = 1 } = {}) =>
+  // Discover movies — filter by genre, country, sort
+  discoverMovies: ({ genre_id, country, sort_by = 'popularity.desc', page = 1 } = {}) =>
     get('/discover/movie', {
-      with_genres: genre_id,
+      with_genres: genre_id || undefined,
+      with_origin_country: country || undefined,
       sort_by,
       page,
       include_adult: false,
     }),
+
+  // TV Series endpoints
+  getTVPopular: (page = 1) => get('/tv/popular', { page }),
+  getTVTrending: (timeWindow = 'week') => get(`/trending/tv/${timeWindow}`),
+  getTVTopRated: (page = 1) => get('/tv/top_rated', { page }),
+  getTVOnAir: (page = 1) => get('/tv/on_the_air', { page }),
+  getTVDetail: (id) =>
+    get(`/tv/${id}`, {
+      append_to_response: 'credits,videos,similar,watch/providers',
+    }),
+  discoverTV: ({ genre_id, country, sort_by = 'popularity.desc', page = 1 } = {}) =>
+    get('/discover/tv', {
+      with_genres: genre_id || undefined,
+      with_origin_country: country || undefined,
+      sort_by,
+      page,
+      include_adult: false,
+    }),
+  getTVGenres: () => get('/genre/tv/list'),
 };
